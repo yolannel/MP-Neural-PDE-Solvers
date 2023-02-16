@@ -4,6 +4,7 @@ from torch import nn, optim
 from torch.utils.data import DataLoader
 from common.utils import HDF5Dataset, GraphCreator
 from equations.PDEs import *
+from torch.utils.tensorboard import SummaryWriter
 
 def training_loop(model: torch.nn.Module,
                   unrolling: list,
@@ -12,6 +13,8 @@ def training_loop(model: torch.nn.Module,
                   loader: DataLoader,
                   graph_creator: GraphCreator,
                   criterion: torch.nn.modules.loss,
+                  writer: SummaryWriter,
+                  epoch: int,
                   device: torch.cuda.device="cpu") -> torch.Tensor:
     """
     One training epoch with random starting points for every trajectory
@@ -28,6 +31,7 @@ def training_loop(model: torch.nn.Module,
         torch.Tensor: training losses
     """
 
+    i=0
     losses = []
     for (u_base, u_super, x, variables) in loader:
         optimizer.zero_grad()
@@ -68,6 +72,24 @@ def training_loop(model: torch.nn.Module,
         losses.append(loss.detach() / batch_size)
         optimizer.step()
 
+        running_loss += loss.item()
+        if i % 1000 == 999:    # every 1000 mini-batches...
+
+            # ...log the running loss
+            writer.add_scalar('training loss',
+                            running_loss / 1000,
+                            epoch * len(loader) + i)
+
+            print("pred shape: ", pred.shape)
+            print("batch_size: ", batch_size)
+            # ...log a Matplotlib Figure showing the model's predictions on a
+            # random mini-batch
+            # writer.add_figure('predictions vs. actuals',
+                            # plot_classes_preds(net, inputs, labels),
+                            # global_step=epoch * len(trainloader) + i)
+            running_loss = 0.0
+
+        i = i+1
     losses = torch.stack(losses)
     return losses
 

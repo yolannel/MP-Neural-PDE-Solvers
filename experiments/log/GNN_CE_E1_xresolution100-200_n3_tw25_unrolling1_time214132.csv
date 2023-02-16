@@ -1,0 +1,46 @@
+Training on dataset data/CE_train_E1.h5
+cuda:0
+models/GNN_CE_E1_xresolution100-200_n3_tw25_unrolling1_time214132.pt
+Number of parameters: 634745
+Epoch 0
+Starting epoch 0...
+Training Loss (progress: 0.00): 1.444131226691569
+Training Loss (progress: 0.08): 0.2771737807157401
+Training Loss (progress: 0.16): 0.22110086391226833
+Training Loss (progress: 0.24): 0.18154907189313876
+Training Loss (progress: 0.32): 0.18132382304365458
+Training Loss (progress: 0.40): 0.16147170486068962
+Training Loss (progress: 0.48): 0.16303942235757762
+Training Loss (progress: 0.56): 0.14666444322183458
+Training Loss (progress: 0.64): 0.1305440005948417
+Training Loss (progress: 0.72): 0.12192444143493052
+Training Loss (progress: 0.80): 0.1259924464511349
+Training Loss (progress: 0.88): 0.11604210494797092
+Training Loss (progress: 0.96): 0.10900186945899254
+Evaluation on validation dataset:
+Step 25, mean loss 0.12931326802775342
+Step 50, mean loss 0.2173408175314617
+Step 75, mean loss 0.20408332497442047
+Step 100, mean loss 0.2777114264045172
+Step 125, mean loss 0.26360707673060235
+Step 150, mean loss 0.4017957471846181
+Step 175, mean loss 0.3679217028845168
+Step 200, mean loss 0.5117218371052463
+Step 225, mean loss 0.7677021161262895
+Unrolled forward losses 25.2727244622011
+Unrolled forward base losses 2.8258499973306765
+Evaluation on test dataset:
+Step 25, mean loss 0.10323492021117836
+Step 50, mean loss 0.10092913284242355
+Step 75, mean loss 0.141652829000442
+Step 100, mean loss 0.24969536329303083
+Step 125, mean loss 0.19423284076162328
+Step 150, mean loss 0.21047695667174926
+Step 175, mean loss 0.25523053241413723
+Step 200, mean loss 0.27017811507726364
+Step 225, mean loss 0.29197478123318493
+Unrolled forward losses 21.102446048782014
+Unrolled forward base losses 2.305686239263697
+Saved model at models/GNN_CE_E1_xresolution100-200_n3_tw25_unrolling1_time214132.pt
+
+Test loss: 21.102446048782014

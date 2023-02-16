@@ -16,6 +16,7 @@ from experiments.models_gnn import MP_PDE_Solver
 from experiments.models_cnn import BaseCNN
 from experiments.train_helper import *
 from equations.PDEs import *
+from torch.utils.tensorboard import SummaryWriter
 
 def check_directory() -> None:
     """
@@ -34,7 +35,8 @@ def train(args: argparse,
           loader: DataLoader,
           graph_creator: GraphCreator,
           criterion: torch.nn.modules.loss,
-          device: torch.cuda.device="cpu") -> None:
+          writer: SummaryWriter,
+          device: torch.cuda.device="cpu",) -> None:
     """
     Training loop.
     Loop is over the mini-batches and for every batch we pick a random timestep.
@@ -63,7 +65,7 @@ def train(args: argparse,
     # Since the starting point is randomly drawn, this in expectation has every possible starting point/sample combination of the training data.
     # Therefore in expectation the whole available training information is covered.
     for i in range(graph_creator.t_res):
-        losses = training_loop(model, unrolling, args.batch_size, optimizer, loader, graph_creator, criterion, device)
+        losses = training_loop(model, unrolling, args.batch_size, optimizer, loader, graph_creator, criterion, writer, epoch, device)
         if(i % args.print_interval == 0):
             print(f'Training Loss (progress: {i / graph_creator.t_res:.2f}): {torch.mean(losses)}')
 
@@ -223,13 +225,18 @@ def main(args: argparse):
     optimizer = optim.AdamW(model.parameters(), lr=args.lr)
     scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[args.unrolling, 5, 10, 15], gamma=args.lr_decay)
 
+    # Tensorboard
+    save_path = f'runs/{args.model}_{pde}_{args.experiment}_xresolution{args.base_resolution[1]}-{args.super_resolution[1]}_n{args.neighbors}_tw{args.time_window}_unrolling{args.unrolling}_time{timestring}'
+    writer = SummaryWriter(save_path)
+    writer.add_graph(model)
+
     # Training loop
     min_val_loss = 10e30
     test_loss = 10e30
     criterion = torch.nn.MSELoss(reduction="sum")
     for epoch in range(args.num_epochs):
         print(f"Epoch {epoch}")
-        train(args, pde, epoch, model, optimizer, train_loader, graph_creator, criterion, device=device)
+        train(args, pde, epoch, model, optimizer, train_loader, graph_creator, criterion, writer, device=device)
         print("Evaluation on validation dataset:")
         val_loss = test(args, pde, model, valid_loader, graph_creator, criterion, device=device)
         if(val_loss < min_val_loss):
