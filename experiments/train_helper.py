@@ -32,6 +32,7 @@ def training_loop(model: torch.nn.Module,
     """
 
     i=0
+    running_loss = 0.0
     losses = []
     for (u_base, u_super, x, variables) in loader:
         optimizer.zero_grad()

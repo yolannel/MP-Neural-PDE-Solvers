@@ -226,9 +226,19 @@ def main(args: argparse):
     scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[args.unrolling, 5, 10, 15], gamma=args.lr_decay)
 
     # Tensorboard
+    
+    # dataiter = iter(train_loader)
+    # (u_base, u_super, x, variables) = next(dataiter)
+    # steps = [t for t in range(graph_creator.tw,
+    #             graph_creator.t_res - graph_creator.tw - (graph_creator.tw * 0) + 1)]
+    # # Randomly choose starting (time) point at the PDE solution manifold
+    # random_steps = random.choices(steps, k=args.batch_size)
+    # data, labels = graph_creator.create_data(u_super, random_steps)
+    # if f'{model}' == 'GNN':
+    #     graph = graph_creator.create_graph(data, labels, x, variables, random_steps).to(device)
     save_path = f'runs/{args.model}_{pde}_{args.experiment}_xresolution{args.base_resolution[1]}-{args.super_resolution[1]}_n{args.neighbors}_tw{args.time_window}_unrolling{args.unrolling}_time{timestring}'
     writer = SummaryWriter(save_path)
-    writer.add_graph(model)
+    # writer.add_graph(model,graph)
 
     # Training loop
     min_val_loss = 10e30
@@ -249,6 +259,7 @@ def main(args: argparse):
 
         scheduler.step()
 
+    writer.flush()
     print(f"Test loss: {test_loss}")
 
 

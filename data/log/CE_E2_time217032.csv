@@ -1,0 +1,10 @@
+No file data/CE_train_E2.h5 exists yet.
+File data/CE_test_E2.h5 is deleted.
+No file data/CE_valid_E2.h5 exists yet.
+Device: cuda:0
+Equation: E2
+Mode: train
+Number of samples: 2048
+Batch size: 4
+Number of batches: 512
+pde_250-200: 4.1892s
