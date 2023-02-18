@@ -236,8 +236,8 @@ def main(args: argparse):
     # data, labels = graph_creator.create_data(u_super, random_steps)
     # if f'{model}' == 'GNN':
     #     graph = graph_creator.create_graph(data, labels, x, variables, random_steps).to(device)
-    save_path = f'runs/{args.model}_{pde}_{args.experiment}_xresolution{args.base_resolution[1]}-{args.super_resolution[1]}_n{args.neighbors}_tw{args.time_window}_unrolling{args.unrolling}_time{timestring}'
-    writer = SummaryWriter(save_path)
+    writer_save_path = f'runs/{args.model}_{pde}_{args.experiment}_xresolution{args.base_resolution[1]}-{args.super_resolution[1]}_n{args.neighbors}_tw{args.time_window}_unrolling{args.unrolling}_time{timestring}'
+    writer = SummaryWriter(writer_save_path)
     # writer.add_graph(model,graph)
 
     # Training loop
