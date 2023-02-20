@@ -7,7 +7,7 @@ from datetime import datetime
 import torch
 import random
 import numpy as np
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 from torch import nn, optim
 from torch.nn import functional as F
 from torch.utils.data import DataLoader
@@ -17,6 +17,11 @@ from experiments.models_cnn import BaseCNN
 from experiments.train_helper import *
 from equations.PDEs import *
 from torch.utils.tensorboard import SummaryWriter
+
+def plot_sol(args: argparse,
+             bundle: torch.Tensor) -> None:
+    X = np.arange(-5, 5, 0.25)
+    Y = np.arange(-5, 5, 0.25)
 
 def check_directory() -> None:
     """
@@ -147,22 +152,69 @@ def main(args: argparse):
     test_string = f'data/{pde}_test_{args.experiment}.h5'
     try:
         train_dataset = HDF5Dataset(train_string, pde=pde, mode='train', base_resolution=base_resolution, super_resolution=super_resolution)
+        # print(train_dataset.data.keys())
+        # print(type(train_dataset.data[train_dataset.dataset_base]))
+        # print(train_dataset.data[train_dataset.dataset_super].maxshape)
+        # temp = train_dataset.data[train_dataset.dataset_super][0:-1:100]
+        # print(type(temp))
+        # print(temp.shape)
+        # temp = DataLoader(train_dataset,
+        #                           batch_size=args.batch_size,
+        #                           num_workers=4,
+        #                           sampler=torch.utils.data.RandomSampler(train_dataset,
+        #                               replacement=True, num_samples=(int)(len(train_dataset)/50),
+        #                               generator=None))
+        # print(type(temp))
+        # bleh = 0
+        # for (u_base, u_super, x, variables) in temp:
+        #     print(bleh)
+        #     bleh = bleh+1
+        valid_dataset = HDF5Dataset(valid_string, pde=pde, mode='valid', base_resolution=base_resolution, super_resolution=super_resolution)
+        test_dataset = HDF5Dataset(test_string, pde=pde, mode='test', base_resolution=base_resolution, super_resolution=super_resolution)
+        train_sampler = None
+        testval_sampler = None
+        train
+        train_divisor = 30
+        testval_divisor = 5
+        if args.mini:
+            train_sampler=torch.utils.data.RandomSampler(train_dataset,
+                        replacement=True,
+                        num_samples=(int)(len(train_dataset)/train_divisor),
+                        generator=None)
+            testval_sampler=torch.utils.data.RandomSampler(valid_dataset,
+                        replacement=True,
+                        num_samples=(int)(len(valid_dataset)/testval_divisor),
+                        generator=None)
+
         train_loader = DataLoader(train_dataset,
                                   batch_size=args.batch_size,
-                                  shuffle=True,
+                                #   shuffle=True,
+                                  sampler=train_sampler,
                                   num_workers=4)
 
-        valid_dataset = HDF5Dataset(valid_string, pde=pde, mode='valid', base_resolution=base_resolution, super_resolution=super_resolution)
         valid_loader = DataLoader(valid_dataset,
                                   batch_size=args.batch_size,
-                                  shuffle=False,
+                                #   shuffle=False,
+                                  sampler=testval_sampler,
                                   num_workers=4)
 
-        test_dataset = HDF5Dataset(test_string, pde=pde, mode='test', base_resolution=base_resolution, super_resolution=super_resolution)
         test_loader = DataLoader(test_dataset,
                                  batch_size=args.batch_size,
-                                 shuffle=False,
+                                #  shuffle=False,
+                                 sampler=testval_sampler,
                                  num_workers=4)
+        # bleh = 0
+        # for (u_base, u_super, x, variables) in train_loader:
+        #     print(bleh)
+        #     bleh = bleh+1
+        # bleh = 0
+        # for (u_base, u_super, x, variables) in valid_loader:
+        #     print(bleh)
+        #     bleh = bleh+1
+        # bleh = 0
+        # for (u_base, u_super, x, variables) in test_loader:
+        #     print(bleh)
+        #     bleh = bleh+1
     except:
         raise Exception("Datasets could not be loaded properly")
 
@@ -307,6 +359,8 @@ if __name__ == "__main__":
             help='Interval between print statements')
     parser.add_argument('--log', type=eval, default=False,
             help='pip the output to log file')
+    parser.add_argument('--mini', type=bool, default=False,
+            help='use mini subset of data')
 
     args = parser.parse_args()
     main(args)

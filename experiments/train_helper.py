@@ -5,6 +5,10 @@ from torch.utils.data import DataLoader
 from common.utils import HDF5Dataset, GraphCreator
 from equations.PDEs import *
 from torch.utils.tensorboard import SummaryWriter
+from matplotlib import pyplot as plt
+
+
+
 
 def training_loop(model: torch.nn.Module,
                   unrolling: list,
@@ -74,14 +78,16 @@ def training_loop(model: torch.nn.Module,
         optimizer.step()
 
         running_loss += loss.item()
-        if i % 1000 == 999:    # every 1000 mini-batches...
+        print(epoch * len(loader) + i)
+        if i % 2 == 1:    # every 1000 mini-batches...
 
             # ...log the running loss
             writer.add_scalar('training loss',
-                            running_loss / 1000,
+                            running_loss / 2,
                             epoch * len(loader) + i)
-
-            print("pred shape: ", pred.shape)
+            print("pred type: ", type(pred[0]))
+            print("pred shape: ", pred[0].shape)
+            print(pred[0])
             print("batch_size: ", batch_size)
             # ...log a Matplotlib Figure showing the model's predictions on a
             # random mini-batch
