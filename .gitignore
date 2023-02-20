@@ -1,2 +1,4 @@
 data/*.h5
 *.o*
+*__pycache__*
+*.pyc
