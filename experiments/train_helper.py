@@ -79,11 +79,12 @@ def training_loop(model: torch.nn.Module,
 
         running_loss += loss.item()
         print(epoch * len(loader) + i)
-        if i % 2 == 1:    # every 1000 mini-batches...
+        frequency = 200
+        if i % frequency == 1:    # every 1000 mini-batches...
 
             # ...log the running loss
             writer.add_scalar('training loss',
-                            running_loss / 2,
+                            running_loss / frequency,
                             epoch * len(loader) + i)
             # print("pred type: ", type(pred[0]))
             # print("pred shape: ", pred[0].shape)
