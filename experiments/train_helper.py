@@ -78,7 +78,6 @@ def training_loop(model: torch.nn.Module,
         optimizer.step()
 
         running_loss += loss.item()
-        print(epoch * len(loader) + i)
         frequency = 200
         if i % frequency == 1:    # every 1000 mini-batches...
 
