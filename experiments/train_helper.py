@@ -85,10 +85,10 @@ def training_loop(model: torch.nn.Module,
             writer.add_scalar('training loss',
                             running_loss / 2,
                             epoch * len(loader) + i)
-            print("pred type: ", type(pred[0]))
-            print("pred shape: ", pred[0].shape)
-            print(pred[0])
-            print("batch_size: ", batch_size)
+            # print("pred type: ", type(pred[0]))
+            # print("pred shape: ", pred[0].shape)
+            # print(pred[0])
+            # print("batch_size: ", batch_size)
             # ...log a Matplotlib Figure showing the model's predictions on a
             # random mini-batch
             # writer.add_figure('predictions vs. actuals',
