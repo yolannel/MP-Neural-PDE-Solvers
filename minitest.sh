@@ -30,7 +30,7 @@ nvidia-smi --query-gpu=name --format=csv,noheader
 hostname
 date
 
-python3 experiments/train.py --device=cuda:0 --experiment=E1 --model=GNN --base_resolution=250,100 --time_window=25 --log=True --num_epochs=2 --batch_size=4
+python3 experiments/train.py --device=cuda:0 --experiment=E1 --model=GNN --base_resolution=250,100 --time_window=25 --log=False --num_epochs=3 --batch_size=4 --mini=True
 
 date
 
